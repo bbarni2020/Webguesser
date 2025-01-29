@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(90deg, #004080, #77aaff);
+            color: #fff;
+            padding: 20px 0;
+            min-height: 70px;
+            border-bottom: #004080 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            list-style: none;
+        }
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+            font-size: 2.5em;
+            padding: 10px 0;
+        }
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
+        .content {
+            padding: 20px;
+            background: #fff;
+            margin-top: 20px;
+        }
+        .endpoint {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .endpoint h2 {
+            color: #333;
+        }
+        .endpoint p {
+            margin: 5px 0;
+        }
+        .endpoint code {
+            background: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1>API Documentation</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#match_new">Match New</a></li>
+                    <li><a href="#update_match">Update Match</a></li>
+                    <li><a href="#update_profile">Update Profile</a></li>
+                    <li><a href="#get_profile">Get Profile</a></li>
+                    <li><a href="#get_user_info">Get User Info</a></li>
+                    <li><a href="#is_active">Is Active</a></li>
+                    <li><a href="#unlock">Unlock</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="content">
+            <p>The API is live at: <a href="https://api-webguesser.masterbros.dev/" target="_blank">https://api-webguesser.masterbros.dev/</a></p>
+            <div class="endpoint" id="match_new">
+                <h2>GET /match_new</h2>
+                <p>Creates a new match for the user if not already exists.</p>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>uid</code> (required): User ID</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns the match details or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="update_match">
+                <h2>GET /update_match</h2>
+                <p>Updates the match details for the user.</p>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>uid</code> (required): User ID</li>
+                    <li><code>points</code> (required): Points scored</li>
+                    <li><code>round</code> (required): Current round</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns the updated match details or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="get_profile">
+                <h2>GET /get_profile</h2>
+                <p>Retrieves the user's profile details.</p>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>uid</code> (required): User ID</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns the user's profile details or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="get_user_info">
+                <h2>GET /user</h2>
+                <p>Retrieves the user's public information.</p>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>username</code> (required): Username</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns the user's public information or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="is_active">
+                <h2>GET /is_active</h2>
+                <p>Checks if the user is active.</p>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>uid</code> (required): User ID</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns the user's active status or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="update_profile">
+                <h2>POST /update_profile</h2>
+                <p>Updates the user's profile details.</p>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>uid</code> (required): User ID</li>
+                    <li><code>leaderboard</code> (required): Leaderboard status (1 or 0)</li>
+                    <li><code>username</code> (required): Username</li>
+                    <li><code>description</code> (required): Description</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns a success message or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="unlock">
+                <h2>POST /unlock</h2>
+                <p>Unlocks or locks the user's profile. Requires an API key.</p>
+                <h3>Headers</h3>
+                <ul>
+                    <li><code>Authorization</code> (required): Bearer API key</li>
+                </ul>
+                <h3>Parameters</h3>
+                <ul>
+                    <li><code>uid</code> (required): User ID</li>
+                    <li><code>active</code> (required): Active status (1 or 0)</li>
+                </ul>
+                <h3>Response</h3>
+                <p>Returns a success message or an error message.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
