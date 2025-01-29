@@ -21,7 +21,7 @@ The website is published at [webguesser.masterbros.dev](https://webguesser.maste
 - ban_create.py: Script to create the `ban.db` database.
 - launcher.py: Script to launch the API and the bot.
 
-## API Endpoints
+## API Endpoints & [Dcumentation](https://webguesser.masterbros.dev/API/)
 
 ### GET /match_new
 - Description: Creates a new match for the user if it does not already exist.
