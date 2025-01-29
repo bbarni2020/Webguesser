@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webguesser Home</title>
+  <link rel="shortcut icon" href="favicon1.ico" type="image/x-icon">
+  <meta name="description"
+    content="WebGuesser is a fun and challenging online game where players guess the name and date of random websites. Test your knowledge of web history with this unique guessing challenge!" />
+  <meta name="keywords"
+    content="website guessing game, guess website name, guess website date, web history game, guess the site, web guessing challenge, fun web games, website trivia, internet archive game, guess websites, online web guessing, website quiz, internet history game" />
+  <meta name="author" content="MasterBros Developers, Barnabás" />
+  <meta name="google-adsense-account" content="ca-pub-2928636491942518">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2928636491942518"
+    crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
+  <style>
+    html {
+      font-family: "Montserrat", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #283c86 0%, #45a247 50%, #d4fc79 100%);
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: #fffffa;
+    }
+    p {
+      font-size: 15px;
+      color: #fffffa;
+      padding: 10px;
+    }
+
+    .points {
+      font-size: 24px;
+      margin-bottom: 40px;
+      color: #4b6b6e;
+    }
+
+    .submitbutt {
+      padding: 10px;
+      width: 120px;
+      color: #4b6b6e;
+      background-color: #fffffa;
+      border: 3px solid #4b6b6e;
+      transition: box-shadow 0.3s ease-in-out;
+      border-radius: 15px;
+    }
+
+    .submitbutt:hover {
+      cursor: pointer;
+      box-shadow: 0 0 15px 5px rgba(148, 220, 226, 0.8);
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(135deg, #d4fc79 0%, #45a247 50%, #283c86 100%);
+      text-align: center;
+      padding: 3px;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #0000EE;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .login-profile-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ad-banner" style="text-align: center;">
+    <amp-ad width="100vw" height="320" type="adsense" data-ad-client="ca-pub-2928636491942518" data-ad-slot="6954064464"
+      data-auto-format="rspv" data-full-width="">
+      <div overflow=""></div>
+    </amp-ad>
+  </div>
+    <h1 id="title">All the 5 rounds are over!</h1>
+    <div class="points" id="pointsDisplay">Points: 0</div>
+    <div class="points" id="average">Average score: 0</div>
+    <div id="description" class="desc" style="display: none; padding-bottom: 20px;">
+      <p>Welcome to Webguesser! In this game, you'll see websites and guess their name and the year they were launched. 
+      You have 45 seconds for each round. After 5 rounds, your total score and average will be displayed. Enjoy playing!</p>
+    </div>
+  <button class="submitbutt" onclick="newGame()">New Game</button>
+  <button class="submitbutt" onclick="window.parent.location.replace('index.html');" style="visibility: visible;"
+    id="home">Go back home</button>
+  <button class="submitbutt login-profile-btn" id="login-profile-btn" onclick="handleLoginProfile()">Log in</button>
+
+  <div class="ad-footer" style="text-align: center;">
+    <amp-ad width="100vw" height="320" type="adsense" data-ad-client="ca-pub-2928636491942518" data-ad-slot="8075574449"
+      data-auto-format="rspv" data-full-width="">
+      <div overflow=""></div>
+    </amp-ad>
+  </div>
+  <div class="ad-left"
+    style="position: fixed; left: 0; top: 50%; transform: translateY(-50%); background-color: #f4f4f4; text-align: center;">
+    <amp-ad width="100vw" height="320" type="adsense" data-ad-client="ca-pub-2928636491942518" data-ad-slot="1196662713"
+      data-auto-format="mcrspv" data-full-width="">
+      <div overflow=""></div>
+    </amp-ad>
+  </div>
+
+  <div class="ad-right"
+    style="position: fixed; right: 0; top: 50%; transform: translateY(-50%); background-color: #f4f4f4; text-align: center;">
+    <amp-ad width="100vw" height="320" type="adsense" data-ad-client="ca-pub-2928636491942518" data-ad-slot="3631254360"
+      data-auto-format="mcrspv" data-full-width="">
+      <div overflow=""></div>
+    </amp-ad>
+  </div>
+  <div class="footer">
+    <p>&copy; 2024 Webguesser (MasterBrosDEV) | <a href="https://masterbros.dev/privacypolicy/Webguesser.pdf">Privacy Policy</a></p>
+  </div>
+  <script>
+    if (window.self === window.top) {
+      document.getElementById('home').style.visibility = 'hidden';
+      const buttons = document.querySelectorAll('.ad-left, .ad-right');
+      buttons.forEach(tag => {
+        tag.style.visibility = 'hidden';
+      });
+    }
+
+    const points = localStorage.getItem('points') || 0;
+    const rounds = localStorage.getItem('rounds') || 0;
+    const xaxaB2 = points;
+    const habax_0 = rounds;
+    document.getElementById('pointsDisplay').innerText = `Points: ${points}`;
+    document.getElementById('average').innerText = `Average score: ${(points / rounds).toFixed(1)}`;
+
+    if (rounds <= 0) {
+     
+        document.getElementById('title').innerText = 'Home';
+      document.getElementById('pointsDisplay').innerText = '';
+      document.getElementById('average').innerText = '';
+      document.getElementById('description').style.display = 'block';
+    } else {
+      document.getElementById('description').style.display = 'none';
+    }
+
+    setInterval(reloadWhenConsoleIsOpen, 1000);
+
+    function newGame() {
+      localStorage.removeItem('points');
+      localStorage.removeItem('rounds');
+      if (window.self === window.top) {
+        window.location.replace('dashboard.html');
+      } else {
+        window.parent.location.reload();
+      }
+    }
+
+    function isConsoleOpen() {
+      const threshold = 100;
+      const start = performance.now();
+
+      debugger;
+
+      const end = performance.now();
+      return end - start > threshold;
+    }
+
+    function reloadWhenConsoleIsOpen() {
+      if (isConsoleOpen()) {
+        localStorage.setItem('points', xaxaB2);
+        localStorage.setItem('rounds', habax_0);
+        window.location.reload();
+      }
+    }
+
+    function setCookie(cname, cvalue, exdays) {
+      const d = new Date();
+      d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+      let expires = "expires=" + d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    function checkLoginStatus() {
+      let user = getCookie("usersaved");
+      const loginProfileBtn = document.getElementById("login-profile-btn");
+      if (user != "") {
+        loginProfileBtn.innerText = "Profile";
+        loginProfileBtn.onclick = function() {
+          window.location.href = 'profile.html';
+        };
+      } else {
+        loginProfileBtn.innerText = "Log in";
+        loginProfileBtn.onclick = function() {
+          window.location.href = 'login.html';
+        };
+      }
+    }
+
+    checkLoginStatus();
+  </script>
+</body>
+
+</html>

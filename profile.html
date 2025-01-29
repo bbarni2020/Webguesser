@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="favicon1.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #283c86 0%, #45a247 50%, #d4fc79 100%);
+            font-family: "Montserrat", sans-serif;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #fffffa;
+        }
+
+        .profile-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin: 20px;
+        }
+
+        .profile-container p {
+            font-size: 18px;
+            color: #fffffa;
+            margin: 10px 0;
+        }
+
+        .profile-container .webinput {
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 10px;
+            border: 3px solid #4b6b6e;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fffffa;
+        }
+
+        .profile-container .webinput[resize] {
+            resize: none;
+        }
+
+        .profile-container .submitbutt {
+            padding: 10px;
+            width: 150px;
+            color: #4b6b6e;
+            background-color: #fffffa;
+            border: 3px solid #4b6b6e;
+            transition: box-shadow 0.3s ease-in-out;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .profile-container .submitbutt:hover {
+            cursor: pointer;
+            box-shadow: 0 0 15px 5px rgba(148, 220, 226, 0.8);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #d4fc79 0%, #45a247 50%, #283c86 100%);
+            text-align: center;
+            padding: 3px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #0000EE;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            color: #4b6b6e;
+            background-color: #fffffa;
+            border: 3px solid #4b6b6e;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            box-shadow: 0 0 15px 5px rgba(148, 220, 226, 0.8);
+        }
+    </style>
+    <script>
+        const apiUrl = 'https://api-webguesser.masterbros.dev';
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function deleteCookie(cname) {
+            document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+
+        async function getUserProfile(uid) {
+            try {
+                const response = await fetch(`${apiUrl}/get_profile?uid=${uid}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('email').innerText = data.email;
+                    document.getElementById('username').value = data.username;
+                    document.getElementById('point').innerText = data.point;
+                    document.getElementById('matches').innerText = data.matches;
+                    document.getElementById('last_match').innerText = data.last_match;
+                    document.getElementById('created').innerText = data.created;
+                    document.getElementById('leaderboard').value = data.leaderboard;
+                    document.getElementById('description').value = data.description;
+                    document.getElementById('pointsPerMatch').innerText = (data.point / data.matches).toFixed(2);
+                }
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        }
+
+        async function updateUserProfile() {
+            const uid = getCookie('usersaved');
+            const username = document.getElementById('username').value;
+            const leaderboard = document.getElementById('leaderboard').value;
+            const description = document.getElementById('description').value;
+
+            const data = {
+                uid: uid,
+                username: username,
+                leaderboard: leaderboard,
+                description: description
+            };
+
+            try {
+                const response = await fetch(`${apiUrl}/update_profile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.error) {
+                    alert(result.error);
+                } else {
+                    alert('Profile updated successfully');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+            }
+        }
+
+        function logout() {
+            deleteCookie('usersaved');
+            location.reload();
+        }
+
+        function isConsoleOpen() {
+            const threshold = 100;
+            const start = performance.now();
+
+            debugger;
+
+            const end = performance.now();
+            return end - start > threshold;
+        }
+
+        function reloadWhenConsoleIsOpen() {
+            if (isConsoleOpen()) {
+                window.location.reload();
+            }
+        }
+
+        setInterval(reloadWhenConsoleIsOpen, 1000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const uid = getCookie('usersaved');
+            if (uid) {
+                getUserProfile(uid);
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</head>
+<body>
+    <button class="back-button" onclick="window.location.href='index.html'">Back</button>
+    <div class="profile-container">
+        <h1>User Profile</h1>
+        <p>Email: <span id="email"></span></p>
+        <p>Username: <input type="text" id="username" class="webinput"></p>
+        <p>Points: <span id="point"></span></p>
+        <p>Matches: <span id="matches"></span></p>
+        <p>Last Match: <span id="last_match"></span></p>
+        <p>Leaderboard: 
+            <select id="leaderboard" class="webinput">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </p>
+        <p>Description: <textarea id="description" class="webinput" style="resize: none;"></textarea></p>
+        <p>Points per Match: <span id="pointsPerMatch"></span></p>
+        <p>Profile created: <span id="created"></span></p>
+        <button class="submitbutt" onclick="updateUserProfile()">Update Profile</button>
+        <button class="submitbutt" onclick="logout()">Logout</button>
+    </div>
+    <div class="footer">
+        <p>&copy; 2024 Webguesser (MasterBrosDEV) | <a href="https://masterbros.dev/privacypolicy/Webguesser.pdf">Privacy Policy</a></p>
+    </div>
+</body>
+</html>

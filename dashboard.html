@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        let points = parseInt(localStorage.getItem('points')) || 0;
+        let thisroundpoints = 0;
+        let genDate = '';
+        let genWebsite = '';
+        let round = parseInt(localStorage.getItem('rounds')) || 0;
+        const abGhhB2_xc = points;
+        const habax_0hJk = round;
+
+        const websites = [
+            'google.com',
+            'wikipedia.com',
+            'apple.com',
+            'bbc.com',
+            'reddit.com',
+            'youtube.com',
+            'amazon.com',
+            'netflix.com',
+            'tesla.com',
+            'facebook.com',
+            'twitter.com',
+            'instagram.com',
+            'microsoft.com',
+            'cnn.com',
+            'wellsfargo.com',
+            'citi.com',
+            'nasa.gov',
+            'cbsnews.com',
+            'foxnews.com',
+            'xbox.com',
+            'zombo.com',
+            'whatsapp.com',
+            'roblox.com',
+            'playstation.com',
+            'hulu.com',
+            'bing.com',
+            'sony.com',
+            'nfl.com',
+            'yahoo.com',
+            'porsche.com',
+            'bugatti.com',
+            'disneyplus.com',
+            'nissan.com',
+            'mcdonalds.com',
+            'kfc.com',
+            'coca-cola.com',
+            'starbucks.com',
+            'ford.com',
+            'volkswagen.com',
+            'zara.com',
+            'hm.com',
+            'openai.com',
+            'paypal.com',
+            'burgerking.com',
+            'imdb.com',
+            'stackoverflow.com',
+            'wikihow.com',
+            'whitehouse.gov'
+        ];
+
+        function getRandomDate() {
+            const start = new Date(1996, 0, 1);
+            const end = new Date();
+            const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            const yyyy = randomDate.getFullYear();
+            const mm = String(randomDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(randomDate.getDate()).padStart(2, '0');
+            return `${yyyy}${mm}${dd}`;
+        }
+
+        async function updateMatch(points, round, thisroundpoints) {
+            const uid = getCookie('usersaved');
+            if (!uid) {
+                console.error('UID is required');
+                return;
+            }
+
+            try {
+                let response = await fetch(`${backendUrl}/update_match?uid=${uid}&points=${thisroundpoints}&round=${round}`);
+                let data = await response.json();
+
+                if (data.error) {
+                    if (data.error === 'User is not active' || data.error === 'ban') {
+                        alert('You are banned. Please contact barnabas@masterbros.dev about the ban.');
+                        return;
+                    } else if (data.error === '[Errno 5] Input/output error') {
+                        alert('You are banned. Please contact barnabas@masterbros.dev about the ban.');
+                        return;
+                    }
+                    console.error('Error updating match:', data.error);
+                } else {
+                    console.log('Match updated:', data);
+                }
+            } catch (error) {
+                console.error('Error occurred:', error);
+            }
+        }
+
+        function showPopup() {
+            const modal = document.getElementById('roundModal');
+            const roundName = document.getElementById('roundName');
+            const roundPoints = document.getElementById('roundPoints');
+            const newRoundPoints = document.getElementById('newRoundPoints');
+            const nextBtn = document.getElementById('nextRoundBtn');
+
+            roundName.textContent = `Round ${round}`;
+            roundPoints.textContent = `Total Points: ${points}`;
+            newRoundPoints.textContent = `Points Earned This Round: ${thisroundpoints}`;
+
+            modal.style.display = 'block';
+
+            nextBtn.onclick = async function () {
+                modal.style.display = 'none';
+                await updateMatch(points, round, thisroundpoints);
+                if (round >= 5) {
+                    document.title = 'Your stats';
+                    const iframe = document.getElementById('archiveFrame');
+                    const navbar = document.getElementById('guess');
+                    const timer = document.getElementById('divtimer');
+                    iframe.src = 'index.html';
+                    iframe.style.pointerEvents = 'all';
+                    navbar.style.visibility = 'hidden';
+                    timer.style.visibility = 'hidden';
+                } else {
+                    window.location.reload();
+                }
+            };
+        }
+
+        async function score() {
+            try {
+                let dateN = '';
+                const dateF = document.getElementById('datetext')?.value;
+                const websiteEL = document.getElementById('website')?.value;
+                if (websiteEL === genWebsite) {
+                    points += 50;
+                    thisroundpoints += 50;
+                }
+                if (!dateF) {
+                    localStorage.setItem('points', points);
+                    localStorage.setItem('rounds', (round + 1));
+                    showPopup();
+                    return;
+                } else {
+                    dateN = dateF.replace(/-/g, '');
+                    thisroundpoints += parseInt(calculatePointsDate(dateN));
+                    points += parseInt(calculatePointsDate(dateN));
+                }
+                localStorage.setItem('points', points);
+                localStorage.setItem('rounds', (round + 1));
+                showPopup();
+            } catch (error) {
+                console.error('Error occurred in score function:', error);
+            }
+        }
+
+        function calculatePointsDate(userDate) {
+            const dateDifference = Math.abs(parseInt(userDate) - parseInt(genDate));
+            console.log(parseInt(userDate));
+            console.log(parseInt(genDate));
+            console.log(dateDifference);
+            return Math.max(0, 500 - dateDifference);
+        }
+        function startTimer() {
+            let timeLeft = 45;
+            const timerDisplay = document.getElementById('time');
+            const countdown = setInterval(() => {
+                timeLeft--;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    score();
+                } else {
+                    timerDisplay.textContent = timeLeft;
+                }
+            }, 1000);
+        }
+
+        function updateScore() {
+            const ads = document.querySelectorAll('.ad-left, .ad-right');
+            ads.forEach(ad => {
+                ad.style.visibility = 'visible';
+            });
+        }
+
+        async function fetchSnapshot(website, date) {
+            const apiUrl = `https://archive.org/wayback/available?url=${website}&timestamp=${date}`;
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.archived_snapshots && data.archived_snapshots.closest && data.archived_snapshots.closest.available) {
+                return data.archived_snapshots.closest.url;
+            } else {
+                return null;
+            }
+        }
+
+        function isConsoleOpen() {
+            const threshold = 100;
+            const start = performance.now();
+
+            debugger;
+
+            const end = performance.now();
+            return end - start > threshold;
+        }
+
+        function reloadWhenConsoleIsOpen() {
+            if (isConsoleOpen()) {
+            if (round >= 5) {
+                localStorage.setItem('rounds', (habax_0hJk + 1));
+            }
+            localStorage.setItem('points', abGhhB2_xc);
+            window.location.reload();
+            }
+        }
+
+        const backendUrl = 'https://api-webguesser.masterbros.dev';
+
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            let useraa = getCookie("usersaved");
+            if (useraa != "") {
+                setCookie("usersaved", useraa, 20);
+                redict("dashboard.html");
+            }
+        }
+
+        async function checkOrCreateMatch() {
+            const uid = getCookie('usersaved');
+            if (!uid) {
+                console.error('UID is required');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                let response = await fetch(`${backendUrl}/match_new?uid=${uid}`);
+                let data = await response.json();
+
+                if (data.error) {
+                    if (data.error === 'User is not active' || data.error === 'ban') {
+                        alert('You are banned. Please contact barnabas@masterbros.dev about the ban.');
+                        return;
+                    } else if (data.error === '[Errno 5] Input/output error') {
+                        setTimeout(checkOrCreateMatch, 2000);
+                        return;
+                    } else if (data.error === 'already_match') {
+                        points = data.points;
+                        round = data.round;
+                        localStorage.setItem('points', points);
+                        localStorage.setItem('rounds', round);
+                    } else {
+                        console.error('Error creating new match:', data.error);
+                    }
+                } else {
+                    points = data.points;
+                    round = data.round;
+                    localStorage.setItem('points', points);
+                    localStorage.setItem('rounds', round);
+                    console.log('New match created:', data.match);
+                }
+
+                document.title = 'Round ' + (round);
+                if (round > 5) {
+                    document.title = 'Your stats';
+                }
+            } catch (error) {
+                console.error('Error occurred:', error);
+            }
+        }
+
+        window.onload = async function () {
+            await checkOrCreateMatch();
+            const ads = document.querySelectorAll('.ad-left, .ad-right');
+            ads.forEach(ad => {
+                ad.style.visibility = 'hidden';
+            });
+            const iframe = document.getElementById('archiveFrame');
+            const guessBtn = document.querySelector('.submitbutt');
+            guessBtn.disabled = true;
+            setTimeout(() => {
+                guessBtn.disabled = false;
+            }, 1500);
+            if (round > 5) {
+                round = 0;
+                const navbar = document.getElementById('guess');
+                const timer = document.getElementById('divtimer');
+                iframe.src = 'index.html';
+                iframe.style.pointerEvents = 'all';
+                navbar.style.visibility = 'hidden';
+                timer.style.visibility = 'hidden';
+            } else {
+                const randomWebsite = websites[Math.floor(Math.random() * websites.length)];
+                iframe.style.pointerEvents = 'none';
+                while (true) {
+                    try {
+                        genWebsite = randomWebsite
+
+                        genDate = getRandomDate();
+                        let snapshotUrl = await fetchSnapshot(genWebsite, genDate);
+
+                        if (!snapshotUrl) {
+                            continue;
+                        }
+                        if (snapshotUrl.substring(0, 4) === 'http') {
+                            snapshotUrl = 'https' + snapshotUrl.substring(4);
+                        }
+
+                        iframe.src = snapshotUrl;
+                        startTimer();
+                        break;
+                    } catch (error) {
+                        console.error('Error occurred: ' + error);
+                    }
+                }
+            }
+        };
+    </script>
+    <meta name="google-adsense-account" content="ca-pub-2928636491942518">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2928636491942518"
+        crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="favicon1.ico" type="image/x-icon">
+    <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
+</head>
+
+<body>
+    <iframe id="archiveFrame" src="loading.html" frameborder="0"
+        style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999; pointer-events: none;"></iframe>
+
+    <div id="guess" class="guessdiv">
+        <input type="text" id="website" placeholder="Guess the website" class="webinput">
+        <input type="date" id="datetext" placeholder="Select the date..." class="dateinput">
+        <button class="submitbutt" onclick="score()" disabled>Guess!</button>
+    </div>
+    <div class="timer" id="divtimer">
+        <h1 id="time">Load</h1>
+    </div>
+    <div class="ad-left"
+        style="position: fixed; left: 0; top: 50%; transform: translateY(-50%); background-color: #f4f4f4; text-align: center;">
+        <amp-ad width="100vw" height="320" type="adsense" data-ad-client="ca-pub-2928636491942518"
+            data-ad-slot="8280945817" data-auto-format="mcrspv" data-full-width="">
+            <div overflow=""></div>
+        </amp-ad>
+    </div>
+
+    <div class="ad-right"
+        style="position: fixed; right: 0; top: 50%; transform: translateY(-50%); background-color: #f4f4f4; text-align: center;">
+        <amp-ad width="100vw" height="320" type="adsense" data-ad-client="ca-pub-2928636491942518"
+            data-ad-slot="1311651704" data-auto-format="mcrspv" data-full-width="">
+            <div overflow=""></div>
+        </amp-ad>
+    </div>
+    <div id="roundModal" class="modal">
+        <div class="modal-content">
+            <h2 id="roundName">Round X</h2>
+            <p id="roundPoints">Total Points: 0</p>
+            <p id="newRoundPoints">Points Earned This Round: 0</p>
+            <button id="nextRoundBtn">Next Round</button>
+        </div>
+    </div>
+</body>
+</html>
