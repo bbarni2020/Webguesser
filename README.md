@@ -67,7 +67,7 @@ If you would like to contribute to the project, please open a pull request or re
 
 
 I used AI for comment and README English grammar correction.  
-This project is licensed under the MIT License. For more details, see the LICENSE file.
+This project is licensed under special license. For more details, see the LICENSE file.
 
 ---
 
