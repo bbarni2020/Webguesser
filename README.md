@@ -66,7 +66,7 @@ If you would like to contribute to the project, please open a pull request or re
 ## License
 
 
-I used AI for comment and README English grammar correction.  
+I used AI for comment and README English grammar correction and I use AI to clean up and format my code for better readability.
 This project is licensed under special license. For more details, see the LICENSE file.
 
 ---
