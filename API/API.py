@@ -372,5 +372,21 @@ def update_active():
     finally:
         conn.close()
 
+@app.route('/')
+def home():
+    return '''
+    <html>
+        <head>
+            <title>Webguesser API</title>
+        </head>
+        <body>
+            <a href="https://webguesser.masterbros.dev/API">Go to Documentation</a>
+            <script>
+                window.location.href = "https://webguesser.masterbros.dev/API";
+            </script>
+        </body>
+    </html>
+    '''
+
 if __name__ == '__main__':
     app.run(port=5640)
