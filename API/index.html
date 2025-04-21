@@ -73,6 +73,12 @@
             padding: 2px 4px;
             border-radius: 4px;
         }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +104,11 @@
     <div class="container">
         <div class="content">
             <p>The API is live at: <a href="https://api-webguesser.masterbros.dev/" target="_blank">https://api-webguesser.masterbros.dev/</a></p>
+            
+            <div class="note">
+                <strong>Note:</strong> Every endpoint that accepts a <code>uid</code> parameter requires your unique user ID. You can register for an account and obtain your <code>uid</code> at <a href="https://webguesser.masterbros.dev/" target="_blank">webguesser.masterbros.dev</a>.
+            </div>
+
             <div class="endpoint" id="match_new">
                 <h2>GET /match_new</h2>
                 <p>Creates a new match for the user if not already exists.</p>
