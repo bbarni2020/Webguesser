@@ -96,6 +96,7 @@
                     <li><a href="#get_user_info">Get User Info</a></li>
                     <li><a href="#is_active">Is Active</a></li>
                     <li><a href="#unlock">Unlock</a></li>
+                    <li><a href="#generate_test_uid">Generate Test UID</a></li>
                 </ul>
             </nav>
         </div>
@@ -194,6 +195,26 @@
                 </ul>
                 <h3>Response</h3>
                 <p>Returns a success message or an error message.</p>
+            </div>
+
+            <div class="endpoint" id="generate_test_uid">
+                <h2>GET /generate_test_uid</h2>
+                <p>Generates a test user ID and creates a test account for API testing purposes.</p>
+                <h3>Parameters</h3>
+                <p>No parameters required</p>
+                <h3>Response</h3>
+                <p>Returns the generated test user details including UID, email, username, points, and matches.</p>
+                <p><strong>Rate limit:</strong> 1 request per second</p>
+                <h3>Example Response</h3>
+                <pre><code>{
+  "message": "Test UID generated successfully",
+  "uid": "test-a1b2c3d4e5f6789a",
+  "email": "test-a1b2c3d4@example.com",
+  "username": "tester-a1b2c3",
+  "points": 500,
+  "matches": 5,
+  "note": "This test user can be used to test the API endpoints"
+}</code></pre>
             </div>
         </div>
     </div>

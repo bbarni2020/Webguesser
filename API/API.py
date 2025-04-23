@@ -9,6 +9,8 @@ from flask_limiter.util import get_remote_address
 import firebase_admin
 from firebase_admin import credentials, auth
 from flask_cors import CORS
+import uuid
+import random
 
 conn = sqlite3.connect('database.db', check_same_thread=False)
 cur = conn.cursor()
@@ -31,6 +33,58 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     conn.execute('PRAGMA foreign_keys = ON;')
     return conn
+
+@app.route('/generate_test_uid', methods=['GET'])
+@limiter.limit("1 per second")
+def generate_test_uid():
+    try:
+        test_uid = f"test-{uuid.uuid4().hex[:16]}"
+        test_email = f"test-{uuid.uuid4().hex[:8]}@example.com"
+        test_username = f"tester-{uuid.uuid4().hex[:6]}"
+        
+        points = random.randint(0, 1000)
+        matches = random.randint(0, 10)
+        description = "This is a test user for API testing"
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("BEGIN EXCLUSIVE")
+        
+        cursor.execute("SELECT * FROM users WHERE uid = ?", (test_uid,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user is None:
+            cursor.execute("""
+            INSERT INTO users (uid, email, username, point, matches, last_match, created, leaderboard, description, active) VALUES
+            (?, ?, ?, ?, ?, ?, ?, 1, ?, 1)
+            """, (test_uid, test_email, test_username, points, matches, date.today(), date.today(), description))
+            
+            cursor.execute("""
+            INSERT INTO games (uid, round, points) VALUES
+            (?, 1, 0)
+            """, (test_uid,))
+            
+            conn.commit()
+            
+            return jsonify({
+                "message": "Test UID generated successfully",
+                "uid": test_uid,
+                "email": test_email,
+                "username": test_username,
+                "points": points,
+                "matches": matches,
+                "note": "This test user can be used to test the API endpoints"
+            }), 200
+        else:
+            return jsonify({
+                "message": "Test UID already exists",
+                "uid": test_uid
+            }), 200
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
 
 @app.route('/match_new', methods=['GET'])
 @limiter.limit("1 per second")
